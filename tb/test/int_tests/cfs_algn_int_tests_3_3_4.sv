@@ -23,7 +23,7 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
 
     virtual cfs_algn_if vif;
 
-    uvm_status_e   status;
+    uvm_status_e status;
     uvm_reg_data_t irqen_val;
 
     phase.raise_objection(this, "TEST_START");
@@ -49,14 +49,15 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
 
     // Step 3: Enable IRQEN for RX_FIFO_FULL and TX_FIFO_FULL
     env.model.reg_block.IRQEN.read(status, irqen_val, UVM_FRONTDOOR);
-  
-    irqen_val[3] = 1'b1; // TX_FIFO_FULL
+
+    irqen_val[3] = 1'b1;  // TX_FIFO_FULL
     env.model.reg_block.IRQEN.write(status, irqen_val, UVM_FRONTDOOR);
     `uvm_info("3_3_2", $sformatf("IRQEN configured: 0x%0h", irqen_val), UVM_MEDIUM)
 
     // Step 4: Send 19 RX packets (SIZE=1, OFFSET=0)
-    for (int i = 0; i <9 ; i++) begin
-      rx_seq = cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_seq_%0d", i));
+    for (int i = 0; i < 9; i++) begin
+      rx_seq =
+          cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_seq_%0d", i));
       rx_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_seq.randomize());
       rx_seq.start(env.virtual_sequencer);
@@ -64,7 +65,7 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
 
     `uvm_info("3_3_2", "Completed sending RX traffic under TX backpressure.", UVM_MEDIUM)
 
-    #(500ns); // Let DUT settle
+    #(500ns);  // Let DUT settle
     phase.drop_objection(this, "TEST_DONE");
 
   endtask

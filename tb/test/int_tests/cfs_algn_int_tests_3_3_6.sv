@@ -16,21 +16,21 @@ class cfs_algn_int_tests_3_3_6 extends cfs_algn_test_base;
     super.new(name, parent);
   endfunction
 
-virtual task run_phase(uvm_phase phase);
+  virtual task run_phase(uvm_phase phase);
 
-  cfs_algn_virtual_sequence_reg_config    cfg_seq;
-  cfs_md_sequence_length_4                 tx_block_seq;
-  cfs_md_sequence_slave_response_forever  tx_unblock_seq;
-  cfs_md_sequence_fixed_delay             rx_delay_seq;
+    cfs_algn_virtual_sequence_reg_config   cfg_seq;
+    cfs_md_sequence_length_4               tx_block_seq;
+    cfs_md_sequence_slave_response_forever tx_unblock_seq;
+    cfs_md_sequence_fixed_delay            rx_delay_seq;
 
-  virtual cfs_algn_if vif;
-  uvm_status_e status;
+    virtual cfs_algn_if                    vif;
+    uvm_status_e                           status;
 
-  phase.raise_objection(this, "TEST_START");
+    phase.raise_objection(this, "TEST_START");
 
-  vif = env.env_config.get_vif();
+    vif = env.env_config.get_vif();
 
-  #(100ns); // Now this comes AFTER all declarations
+    #(100ns);  // Now this comes AFTER all declarations
     // Step 0: Block TX side with a 4-byte transaction
     fork
       begin
@@ -56,7 +56,7 @@ virtual task run_phase(uvm_phase phase);
     `uvm_info("3_3_9", "2 RX packets sent with fixed delays", UVM_MEDIUM)
 
     // Step 3: Wait and then unblock TX ready
-   
+
 
     fork
       begin
@@ -64,7 +64,7 @@ virtual task run_phase(uvm_phase phase);
         tx_unblock_seq.start(env.md_tx_agent.sequencer);
       end
     join_none
-     #(300ns);
+    #(300ns);
 
     `uvm_info("3_3_9", "TX unblocked, ready to consume data", UVM_MEDIUM)
 

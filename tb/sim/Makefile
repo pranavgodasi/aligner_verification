@@ -84,4 +84,4 @@ report:
 	@echo "[Opening HTML report with Firefox...]"
 	@firefox $(UCDB_DIR)/coverage_report/index.html >/dev/null 2>&1 || echo "Please open $(UCDB_DIR)/coverage_report/index.html manually."
 
-.PHONY: all comp run grun clean regress cmerge report
+.PHONY: all comp run grun clean regress cmerge report 

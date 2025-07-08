@@ -37,9 +37,10 @@ class cfs_algn_err_tests_3_4_3 extends cfs_algn_test_base;
     env.model.reg_block.CTRL.read(status, ctrl_val, UVM_FRONTDOOR);
 
     if (status != UVM_NOT_OK)
-      `uvm_info("3_4_3", $sformatf("PASS: Read attempt from write-only CTRL.CLR was handled: CTRL=0x%0h", ctrl_val), UVM_LOW)
-    else
-      `uvm_error("3_4_3", "FAIL: Read from write-only CTRL.CLR was not blocked")
+      `uvm_info("3_4_3", $sformatf(
+                "PASS: Read attempt from write-only CTRL.CLR was handled: CTRL=0x%0h", ctrl_val),
+                UVM_LOW)
+    else `uvm_error("3_4_3", "FAIL: Read from write-only CTRL.CLR was not blocked")
 
     #(100ns);
     phase.drop_objection(this, "TEST_DONE");

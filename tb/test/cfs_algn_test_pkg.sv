@@ -35,7 +35,7 @@ package cfs_algn_test_pkg;
   `include "../test/md_tests/cfs_algn_md_tests_3_2_2.sv"
   `include "../test/md_tests/cfs_algn_md_tests_3_2_4.sv"
   `include "../test/md_tests/cfs_algn_md_tests_3_2_3.sv"
-  
+
   //manual interrupt tests tests included below
   `include "../test/int_tests/cfs_algn_int_tests_3_3_1.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_2.sv"
@@ -45,7 +45,7 @@ package cfs_algn_test_pkg;
   `include "../test/int_tests/cfs_algn_int_tests_3_3_8.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_6.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_7.sv"
-  
+
   //manual error tests included below
   `include "../test/err_tests/cfs_algn_err_tests_3_4_1.sv"
   `include "../test/err_tests/cfs_algn_err_tests_3_4_2.sv"
@@ -53,8 +53,8 @@ package cfs_algn_test_pkg;
   `include "../test/err_tests/cfs_algn_err_tests_3_4_5.sv"
   //manual clock reset tests included below
   `include "../test/clock_reset_tests/cfs_algn_clock_reset_tests_3_5_1.sv"
-    `include "../test/clock_reset_tests/cfs_algn_clock_reset_tests_3_5_2.sv"
-      
+  `include "../test/clock_reset_tests/cfs_algn_clock_reset_tests_3_5_2.sv"
+
 
 
 

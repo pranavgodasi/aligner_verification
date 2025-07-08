@@ -37,8 +37,7 @@ class cfs_algn_err_tests_3_4_2 extends cfs_algn_test_base;
 
     if (status != UVM_NOT_OK)
       `uvm_info("3_4_2", "PASS: Write to STATUS register blocked as expected", UVM_LOW)
-    else
-      `uvm_error("3_4_2", "FAIL: STATUS register write was not rejected by the DUT")
+    else `uvm_error("3_4_2", "FAIL: STATUS register write was not rejected by the DUT")
 
     #(100ns);
     phase.drop_objection(this, "TEST_DONE");
