@@ -45,9 +45,12 @@ class cfs_algn_err_tests_3_4_5 extends cfs_algn_test_base;
     // Step 2: Write illegal CTRL values (SIZE=3, OFFSET=1)
     ctrl_val = 32'h00000103;
     env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
-    `uvm_info("3_4_5", $sformatf("Wrote illegal CTRL config: SIZE=3, OFFSET=1 => 0x%0h", ctrl_val),
-              UVM_MEDIUM)
-
+    #(50ns);
+    ctrl_val = 32'h00000106;
+    env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
+    #(50ns);
+     ctrl_val = 32'h00000100;
+    env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
     // Step 3: Wait and check DUT response
     #(200ns);
 

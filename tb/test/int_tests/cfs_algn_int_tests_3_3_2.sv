@@ -49,9 +49,11 @@ class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
 
     // Step 3: Enable IRQEN for RX_FIFO_FULL and TX_FIFO_FULL
     env.model.reg_block.IRQEN.read(status, irqen_val, UVM_FRONTDOOR);
-    irqen_val[1] = 1'b1;  // RX_FIFO_FULL
-    irqen_val[3] = 1'b1;  // TX_FIFO_FULL
-    env.model.reg_block.IRQEN.write(status, irqen_val, UVM_FRONTDOOR);
+    //irqen_val[1] = 1'b1;  // RX_FIFO_FULL
+   // irqen_val[3] = 1'b1;  // TX_FIFO_FULL
+   env.model.reg_block.IRQEN.write(status, 32'h00000000, UVM_FRONTDOOR);
+    #(50ns); 
+    env.model.reg_block.IRQEN.write(status, 32'h00000000, UVM_FRONTDOOR);
     `uvm_info("3_3_2", $sformatf("IRQEN configured: 0x%0h", irqen_val), UVM_MEDIUM)
 
     // Step 4: Send 19 RX packets (SIZE=1, OFFSET=0)

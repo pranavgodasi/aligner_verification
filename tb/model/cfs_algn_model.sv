@@ -33,8 +33,9 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
   //Port for sending the expected interrupt request
   uvm_analysis_port #(bit) port_out_irq;
 
-  //Port for sending the split transaction info
+  //Port for sending the split information
   uvm_analysis_port #(cfs_algn_split_info) port_out_split_info;
+
 
   //Model of the RX FIFO
   protected uvm_tlm_fifo #(cfs_md_item_mon) rx_fifo;
@@ -48,7 +49,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
   //Event to synchronize the completing of the TX transaction
   protected uvm_event tx_complete;
 
-  //buffered value of the expected interrupt request
+  //Buffered value of the expected interrupt request
   protected bit exp_irq;
 
 
@@ -64,9 +65,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
   //Pointer to the process of the task tx_ctrl()
   local process process_tx_ctrl;
 
-  //Pointer to the process of the task send_exp_irq
-  local process process_send_exp_irq;
-
   //Pointer to the process from inside function set_rx_fifo_empty()
   local process process_set_rx_fifo_empty;
 
@@ -79,6 +77,9 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
   //Pointer to the process from inside function set_tx_fifo_full()
   local process process_set_tx_fifo_full;
 
+  //Pointer to the process of the task send_exp_irq()
+  local process process_send_exp_irq;
+
 
   `uvm_component_utils(cfs_algn_model)
 
@@ -90,7 +91,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     port_out_rx         = new("port_out_rx", this);
     port_out_tx         = new("port_out_tx", this);
     port_out_irq        = new("port_out_irq", this);
-    port_out_split_info = new("port_out_split", this);
+    port_out_split_info = new("port_out_split_info", this);
 
     rx_fifo             = new("rx_fifo", this, 8);
     tx_fifo             = new("tx_fifo", this, 8);
@@ -145,7 +146,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     kill_process(process_tx_ctrl);
     kill_process(process_send_exp_irq);
 
-
     kill_process(process_set_rx_fifo_empty);
     kill_process(process_set_rx_fifo_full);
     kill_process(process_set_tx_fifo_empty);
@@ -163,6 +163,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     tx_ctrl_nb();
     send_exp_irq_nb();
   endfunction
+
   //Function to determine if the model is empty
   virtual function bit is_empty();
     if (rx_fifo.used() != 0) begin
@@ -179,6 +180,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
 
     return 1;
   endfunction
+
   //Get the expected response
   protected virtual function cfs_md_response get_exp_response(cfs_md_item_mon item);
     //Size of the access is 0.
@@ -210,7 +212,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
               ), UVM_MEDIUM)
 
     if (reg_block.IRQEN.MAX_DROP.get_mirrored_value() == 1) begin
-      port_out_irq.write(1);
+      exp_irq = 1;
     end
   endfunction
 
@@ -287,7 +289,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
                   ), UVM_MEDIUM)
 
         if (reg_block.IRQEN.TX_FIFO_FULL.get_mirrored_value() == 1) begin
-          // port_out_irq.write(1);
           exp_irq = 1;
         end
 
@@ -315,7 +316,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
                   ), UVM_MEDIUM)
 
         if (reg_block.IRQEN.TX_FIFO_EMPTY.get_mirrored_value() == 1) begin
-          // port_out_irq.write(1);
           exp_irq = 1;
         end
 
@@ -375,11 +375,10 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     if (reg_block.STATUS.CNT_DROP.get_mirrored_value() < max_value) begin
       void'(reg_block.STATUS.CNT_DROP.predict(reg_block.STATUS.CNT_DROP.get_mirrored_value() + 1));
 
-      `uvm_info("DEBUG", $sformatf("Increment %9s: %0d due to: %0s",
-                                   reg_block.STATUS.CNT_DROP.get_full_name(),
-                                   reg_block.STATUS.CNT_DROP.get_mirrored_value, response.name()),
-                UVM_NONE)
-
+      `uvm_info("CNT_DROP", $sformatf("Increment %9s: %0d due to: %0s",
+                                      reg_block.STATUS.CNT_DROP.get_full_name(),
+                                      reg_block.STATUS.CNT_DROP.get_mirrored_value,
+                                      response.name()), UVM_LOW)
       if (reg_block.STATUS.CNT_DROP.get_mirrored_value() == max_value) begin
         set_max_drop();
       end
@@ -422,37 +421,11 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
       set_tx_fifo_empty();
     end
   endfunction
-
-  //Task for trying to synchronize a push to RX FIFO with RTL
-  // protected virtual task sync_push_to_rx_fifo();
-  //   cfs_algn_vif vif = env_config.get_vif();
-  //
-  //   fork
-  //     begin
-  //       fork
-  //         begin
-  //           @(posedge vif.clk iff (vif.rx_fifo_push));
-  //         end
-  //         begin
-  //           repeat (10) begin
-  //             @(posedge vif.clk iff(reg_block.STATUS.RX_LVL.get_mirrored_value() < rx_fifo.size()));
-  //           end
-  //
-  //           `uvm_warning("DUT_WARNING", "RX FIFO push did NOT synchronize with RTL")
-  //         end
-  //       join_any
-  //
-  //       disable fork;
-  //     end
-  //   join
-  // endtask
-
   protected virtual task sync_push_to_rx_fifo();
     cfs_algn_vif vif = env_config.get_vif();
 
     int timeout = 10;
     bit rtl_push_detected = 0;
-
     fork
       begin
         // Wait for vif.rx_fifo_push
@@ -464,7 +437,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
           end
         end
       end
-
       begin
         // Wait for max 10 posedges where RX_LVL < FIFO size
         int count = 0;
@@ -474,42 +446,13 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
         end
       end
     join_any
-
     disable fork;
-
     if (!rtl_push_detected) `uvm_warning("DUT_WARNING", "RX FIFO push did NOT synchronize with RTL")
   endtask
-  //Task for trying to synchronize a pop from RX FIFO with RTL
-  // protected virtual task sync_pop_from_rx_fifo();
-  //   cfs_algn_vif vif = env_config.get_vif();
-  //
-  //   fork
-  //     begin
-  //       fork
-  //         begin
-  //           @(posedge vif.clk iff (vif.rx_fifo_pop));
-  //         end
-  //         begin
-  //           repeat (10) begin
-  //             @(posedge vif.clk iff((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) && (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size())));
-  //           end
-  //
-  //           `uvm_warning("DUT_WARNING", "RX FIFO pop did NOT synchronize with RTL")
-  //         end
-  //       join_any
-  //
-  //       disable fork;
-  //     end
-  //   join
-  // endtask
-
-
   protected virtual task sync_pop_from_rx_fifo();
     cfs_algn_vif vif = env_config.get_vif();
-
     int timeout = 10;
     bit rtl_pop_detected = 0;
-
     fork
       begin
         // Wait for rx_fifo_pop to go high
@@ -521,7 +464,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
           end
         end
       end
-
       begin
         // Wait for up to 10 cycles if RX_LVL > 0 and TX_LVL < fifo size
         int count = 0;
@@ -534,42 +476,14 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
         end
       end
     join_any
-
     disable fork;
-
     if (!rtl_pop_detected) `uvm_warning("DUT_WARNING", "RX FIFO pop did NOT synchronize with RTL")
   endtask
-  //Task for trying to synchronize a push to TX FIFO with RTL
-  // protected virtual task sync_push_to_tx_fifo();
-  //   cfs_algn_vif vif = env_config.get_vif();
-  //
-  //   fork
-  //     begin
-  //       fork
-  //         begin
-  //           @(posedge vif.clk iff (vif.tx_fifo_push));
-  //         end
-  //         begin
-  //           repeat (10) begin
-  //             @(posedge vif.clk iff(reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size()));
-  //           end
-  //
-  //           `uvm_warning("DUT_WARNING", "TX FIFO push did NOT synchronize with RTL")
-  //         end
-  //       join_any
-  //
-  //       disable fork;
-  //     end
-  //   join
-  // endtask
-
 
   protected virtual task sync_push_to_tx_fifo();
     cfs_algn_vif vif = env_config.get_vif();
-
     bit rtl_push_detected = 0;
     int timeout = 10;
-
     fork
       begin
         // Wait for tx_fifo_push signal
@@ -581,7 +495,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
           end
         end
       end
-
       begin
         // Check TX_LVL condition for up to 10 cycles
         int count = 0;
@@ -591,43 +504,13 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
         end
       end
     join_any
-
     disable fork;
-
     if (!rtl_push_detected) `uvm_warning("DUT_WARNING", "TX FIFO push did NOT synchronize with RTL")
   endtask
-
-  //Task for trying to synchronize a pop from TX FIFO with RTL
-  // protected virtual task sync_pop_from_tx_fifo();
-  //   cfs_algn_vif vif = env_config.get_vif();
-  //
-  //   fork
-  //     begin
-  //       fork
-  //         begin
-  //           @(posedge vif.clk iff (vif.tx_fifo_pop));
-  //         end
-  //         begin
-  //           repeat (200) begin
-  //             @(posedge vif.clk iff (reg_block.STATUS.TX_LVL.get_mirrored_value() > 0));
-  //           end
-  //
-  //           `uvm_warning("DUT_WARNING", "TX FIFO pop did NOT synchronize with RTL")
-  //         end
-  //       join_any
-  //
-  //       disable fork;
-  //     end
-  //   join
-  // endtask
-
-
   protected virtual task sync_pop_from_tx_fifo();
     cfs_algn_vif vif = env_config.get_vif();
-
     bit rtl_pop_detected = 0;
     int timeout = 200;
-
     fork
       begin
         // Wait for tx_fifo_pop signal
@@ -639,7 +522,6 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
           end
         end
       end
-
       begin
         // Poll TX_LVL value for up to 200 cycles
         int count = 0;
@@ -649,14 +531,204 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
         end
       end
     join_any
-
     disable fork;
-
     if (!rtl_pop_detected) `uvm_warning("DUT_WARNING", "TX FIFO pop did NOT synchronize with RTL")
   endtask
-
   //Task to push to RX FIFO the incoming data
   protected virtual task push_to_rx_fifo(cfs_md_item_mon item);
+    sync_push_to_rx_fifo();
+    rx_fifo.put(item);
+    kill_set_rx_fifo_empty();
+    inc_rx_lvl();
+    `uvm_info("DEBUG", $sformatf("RX FIFO push - new level: %0d, pushed entry: %0s",
+                                 reg_block.STATUS.RX_LVL.get_mirrored_value(),
+                                 item.convert2string()), UVM_NONE)
+    port_out_rx.write(CFS_MD_OKAY);
+  endtask
+  //Task for trying to synchronize a push to RX FIFO with RTL
+  /* protected virtual task sync_push_to_rx_fifo();
+                uvm_status_e status;
+                uvm_reg_data_t data;
+                int rx_lvl;
+    cfs_algn_vif vif = env_config.get_vif();
+
+    fork
+      begin
+        fork
+          begin
+            forever begin
+              @(posedge vif.clk);
+              if (vif.rx_fifo_push) begin
+                `uvm_info(
+                    "SYNC",
+                    "✔ RTL: Detected vif.rx_fifo_push---------------------------------------------------------",
+                    UVM_MEDIUM)
+                break;
+              end
+            end
+            // @(posedge vif.clk iff (vif.rx_fifo_push));
+          end
+          begin
+            repeat (10) begin
+              bit condition_met;
+              @(posedge vif.clk);
+                
+                reg_block.STATUS.read(status, data, UVM_FRONTDOOR, null);
+                rx_lvl = data[7:0];
+                condition_met = (rx_lvl < rx_fifo.size());
+              //condition_met = (reg_block.STATUS.RX_LVL.get_mirrored_value() < rx_fifo.size());
+              if (condition_met) disable fork;  // optional early exit
+            end
+            //@(posedge vif.clk iff(reg_block.STATUS.RX_LVL.get_mirrored_value() < rx_fifo.size()));
+          end
+          //end
+          `uvm_warning("DUT_WARNING", "RX FIFO push did NOT synchronize with RTL")
+        join_any
+
+        disable fork;
+      end
+    join
+  endtask
+
+
+  //Task for trying to synchronize a pop from RX FIFO with RTL
+  protected virtual task sync_pop_from_rx_fifo();
+                uvm_status_e status;
+                uvm_reg_data_t data;
+int rx_lvl;
+int tx_lvl;
+    cfs_algn_vif vif = env_config.get_vif();
+
+    fork
+      begin
+        fork
+          begin
+            forever begin
+              @(posedge vif.clk);
+              if (vif.rx_fifo_pop) begin
+                `uvm_info(
+                    "SYNC",
+                    "✔ RTL: Detected vif.rx_fifo_pop---------------------------------------------------------",
+                    UVM_MEDIUM)
+                break;
+              end
+            end
+            //@(posedge vif.clk iff (vif.rx_fifo_pop));
+          end
+          begin
+            repeat (10) begin
+              bit condition_met2;
+              @(posedge vif.clk);
+                reg_block.STATUS.read(status, data, UVM_FRONTDOOR, null);
+                rx_lvl = data[7:0];
+                tx_lvl = data[15:8];
+                condition_met2=((rx_lvl > 0) && (tx_lvl < tx_fifo.size()));
+              //condition_met2 = ((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) && (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size()));
+              if (condition_met2) disable fork;  // optional early exit
+            end
+            //@(posedge vif.clk iff((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) && (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size())));
+          end
+          `uvm_warning("DUT_WARNING", "RX FIFO pop did NOT synchronize with RTL")
+          //end
+        join_any
+        disable fork;
+      end
+    join
+  endtask
+
+
+  //Task for trying to synchronize a push to TX FIFO with RTL
+  protected virtual task sync_push_to_tx_fifo();
+                uvm_status_e status;
+                uvm_reg_data_t data;
+int tx_lvl;
+    cfs_algn_vif vif = env_config.get_vif();
+
+    fork
+      begin
+        fork
+          begin
+            forever begin
+              @(posedge vif.clk);
+              if (vif.tx_fifo_push) begin
+                `uvm_info(
+                    "SYNC",
+                    "✔ RTL: Detected vif.tx_fifo_push---------------------------------------------------------",
+                    UVM_MEDIUM)
+                break;
+              end
+            end
+            //@(posedge vif.clk iff (vif.tx_fifo_push));
+          end
+          begin
+            repeat (10) begin
+              bit condition_met3;
+              @(posedge vif.clk);
+            reg_block.STATUS.read(status, data, UVM_FRONTDOOR, null);
+            tx_lvl = data[15:8];
+            condition_met3=(tx_lvl < tx_fifo.size());
+             // condition_met3 = (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size());
+              if (condition_met3) disable fork;  // optional early exit
+            end
+            //@(posedge vif.clk iff(reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size()));
+          end
+
+          `uvm_warning("DUT_WARNING", "TX FIFO push did NOT synchronize with RTL")
+          //end
+        join_any
+        disable fork;
+      end
+    join
+  endtask
+
+
+  //Task for trying to synchronize a pop from TX FIFO with RTL
+  protected virtual task sync_pop_from_tx_fifo();
+            uvm_status_e status;
+            uvm_reg_data_t data;
+int tx_lvl;
+    cfs_algn_vif vif = env_config.get_vif();
+
+    fork
+      begin
+        fork
+          begin
+            forever begin
+              @(posedge vif.clk);
+              if (vif.tx_fifo_pop) begin
+                `uvm_info(
+                    "SYNC",
+                    "✔ RTL: Detected vif.tx_fifo_pop---------------------------------------------------------",
+                    UVM_MEDIUM)
+                break;
+              end
+            end
+            //@(posedge vif.clk iff (vif.tx_fifo_pop));
+          end
+          begin
+            repeat (200) begin
+              bit condition_met4;
+              @(posedge vif.clk);
+            reg_block.STATUS.read(status, data, UVM_FRONTDOOR, null);
+            tx_lvl = data[15:8];
+            condition_met4=(tx_lvl > 0);
+              //condition_met4 = (reg_block.STATUS.TX_LVL.get_mirrored_value() > 0);
+              if (condition_met4) disable fork;  // optional early exit
+            end
+            // @(posedge vif.clk iff (reg_block.STATUS.TX_LVL.get_mirrored_value() > 0));
+          end
+
+          `uvm_warning("DUT_WARNING", "TX FIFO pop did NOT synchronize with RTL")
+          //end
+        join_any
+        disable fork;
+      end
+    join
+  endtask*/
+
+
+  //Task to push to RX FIFO the incoming data
+  /* protected virtual task push_to_rx_fifo(cfs_md_item_mon item);
     sync_push_to_rx_fifo();
 
     rx_fifo.put(item);
@@ -668,9 +740,9 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     `uvm_info("RX_FIFO", $sformatf("RX FIFO push - new level: %0d, pushed entry: %0s",
                                    reg_block.STATUS.RX_LVL.get_mirrored_value(),
                                    item.convert2string()), UVM_LOW)
-
+    //`uvm_info("MODEL0", $sformatf("Calling port_out_rx.write with value: %s", item.name()), UVM_MEDIUM);
     port_out_rx.write(CFS_MD_OKAY);
-  endtask
+  endtask*/
 
   //Task to pop from RX FIFO
   protected virtual task pop_from_rx_fifo(ref cfs_md_item_mon item);
@@ -765,7 +837,16 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
 
               if (tx_item.data.size() == ctrl_size) begin
                 tx_item.end_tr(buffer_item.get_end_time());
-
+            begin
+                cfs_algn_split_info info=cfs_algn_split_info::type_id::create("info",this);
+                info.ctrl_offset      = ctrl_offset;
+                info.ctrl_size        = ctrl_size;
+                info.md_offset        = buffer_item.offset;
+                info.md_size          = buffer_item.data.size();
+                info.num_bytes_needed = 0;
+`uvm_info("DEBUG1",$sformatf("md_offset:%d, md_size:%d##########################################################",info.md_offset, info.md_size),UVM_LOW)
+                port_out_split_info.write(info);
+            end
                 push_to_tx_fifo(tx_item);
               end
             end else begin
@@ -777,6 +858,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
 
               buffer.push_front(splitted_items[1]);
               buffer.push_front(splitted_items[0]);
+
               begin
                 cfs_algn_split_info info = cfs_algn_split_info::type_id::create("info", this);
 
@@ -786,6 +868,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
                 info.md_size          = buffer_item.data.size();
                 info.num_bytes_needed = num_bytes_needed;
 
+`uvm_info("DEBUG1",$sformatf("md_offset:%d, md_size:%d---------------------------------------------------------",info.md_offset, info.md_size),UVM_LOW)
                 port_out_split_info.write(info);
               end
             end
@@ -853,7 +936,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
     end
   endtask
 
-  //task for sending the expected interrupt request
+  //Task for sending the expected interrupt request
   protected virtual task send_exp_irq();
     cfs_algn_vif vif = env_config.get_vif();
 
@@ -867,6 +950,7 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
       end
     end
   endtask
+
   //Function to push to RX FIFO the incoming data
   local virtual function void push_to_rx_fifo_nb(cfs_md_item_mon item);
     if (process_push_to_rx_fifo != null) begin
@@ -957,14 +1041,17 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
 
   endfunction
 
+
   virtual function void write_in_rx(cfs_md_item_mon item_mon);
+    cfs_md_response exp_response;
     if (item_mon.is_active()) begin
-      cfs_md_response exp_response = get_exp_response(item_mon);
+      exp_response = get_exp_response(item_mon);
 
       case (exp_response)
         CFS_MD_ERR: begin
           inc_cnt_drop(exp_response);
-
+          //`uvm_info("MODEL1", $sformatf(
+          //          "Calling port_out_rx.write with value: %s", exp_response.name()), UVM_MEDIUM);
           port_out_rx.write(exp_response);
         end
         CFS_MD_OKAY: begin
@@ -983,12 +1070,13 @@ class cfs_algn_model extends uvm_component implements uvm_ext_reset_handler;
       tx_complete.trigger();
     end
   endfunction
-
   function int get_buffer_data_size();
     int total = 0;
     foreach (buffer[i]) total += buffer[i].data.size();
     return total;
+
   endfunction
+
 
 endclass
 

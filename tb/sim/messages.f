@@ -21,3 +21,4 @@
 +uvm_set_verbosity=*,3_4_3,UVM_MEDIUM,time,0
 +uvm_set_verbosity=*,RESET_TEST,UVM_MEDIUM,time,0
 +uvm_set_verbosity=*,CLOCK_TEST,UVM_MEDIUM,time,0
++uvm_set_verbosity=*,DEBUG1,UVM_HIGH,time,0 
