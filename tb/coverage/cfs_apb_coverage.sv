@@ -38,6 +38,7 @@ class cfs_apb_coverage extends uvm_ext_coverage #(
       bins length_gt_10 = {[11 : $]};
 
       illegal_bins length_lt_2 = {[$ : 1]};
+      ignore_bins all_others = {[0:2], [4:$]};
     }
 
     prev_item_delay: coverpoint item.prev_item_delay {

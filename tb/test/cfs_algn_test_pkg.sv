@@ -54,7 +54,15 @@ package cfs_algn_test_pkg;
   //manual clock reset tests included below
   `include "../test/clock_reset_tests/cfs_algn_clock_reset_tests_3_5_1.sv"
   `include "../test/clock_reset_tests/cfs_algn_clock_reset_tests_3_5_2.sv"
-
+  //manual directed tests included below
+  `include "../test/directed_tests/cfs_algn_md_tests_target_length.sv"
+  `include "../test/directed_tests/cfs_algn_num_bytes.sv"
+  `include "../test/directed_tests/cfs_algn_clock_reset_during_apb_access.sv"
+  `include "../test/directed_tests/cfs_algn_directed_test_md_size1_offset3.sv"
+  `include "../test/directed_tests/cfs_algn_test_split_cover_directed.sv"
+  `include "../test/directed_tests/cfs_algn_test_ctrl4_off0_two_pkts.sv"
+   `include "../test/directed_tests/cfs_algn_test_split_cross_cover_directed.sv"
+   `include "../test/directed_tests/cfs_algn_test_split_legal_combinations.sv"
 
 
 
