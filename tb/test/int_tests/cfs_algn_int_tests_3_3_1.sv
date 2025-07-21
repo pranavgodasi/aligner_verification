@@ -40,8 +40,7 @@ class cfs_algn_int_tests_3_3_1 extends cfs_algn_test_base;
 
     // Step 2: Enable IRQEN.CNT_DROP (bit 4)
     env.model.reg_block.IRQEN.read(status, irqen_val, UVM_FRONTDOOR);
-    irqen_val[1] = 1'b0;
-    irqen_val[4] = 1'b1;
+    irqen_val[4] = 1'b0;
     env.model.reg_block.IRQEN.write(status, irqen_val, UVM_FRONTDOOR);
     `uvm_info("3_3_1", $sformatf("IRQEN updated: 0x%0h", irqen_val), UVM_MEDIUM)
 

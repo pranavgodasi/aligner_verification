@@ -5,7 +5,7 @@ class cfs_algn_directed_test_md_size1_offset3 extends cfs_algn_test_base;
 
   `uvm_component_utils(cfs_algn_directed_test_md_size1_offset3)
 
-function new(string name = "", uvm_component parent = null);
+  function new(string name = "", uvm_component parent = null);
     super.new(name, parent);
   endfunction
 
@@ -49,7 +49,8 @@ function new(string name = "", uvm_component parent = null);
 
     // Step 4: Send 8 RX packets with SIZE=1 and OFFSET=0, delay 5 clks, read STATUS at each negedge
     for (int i = 0; i < 1; i++) begin
-      rx_seq = cfs_algn_virtual_sequence_rx_size2_offset2::type_id::create($sformatf("rx_size1_%0d", i));
+      rx_seq =
+          cfs_algn_virtual_sequence_rx_size2_offset2::type_id::create($sformatf("rx_size1_%0d", i));
       rx_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_seq.randomize());
       rx_seq.start(env.virtual_sequencer);

@@ -7,7 +7,7 @@
 //              verification of the Aligner.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_ALGN_TEST_BASE_SV
-`define CFS_ALGN_TEST_BASE_SV 
+`define CFS_ALGN_TEST_BASE_SV
 
 class cfs_algn_test_base extends uvm_test;
 

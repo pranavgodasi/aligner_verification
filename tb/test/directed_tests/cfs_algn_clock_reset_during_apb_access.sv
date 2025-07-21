@@ -23,7 +23,9 @@ class cfs_algn_clock_reset_during_apb_access extends cfs_algn_test_base;
     phase.raise_objection(this, "RESET_DURING_APB");
 
     // Get interface handles
-    if (!uvm_config_db#(virtual cfs_apb_if)::get(null, "uvm_test_top.env.apb_agent", "vif", apb_vif)) begin
+    if (!uvm_config_db#(virtual cfs_apb_if)::get(
+            null, "uvm_test_top.env.apb_agent", "vif", apb_vif
+        )) begin
       `uvm_fatal("RESET_TEST", "Failed to get APB interface")
     end
 
@@ -47,7 +49,7 @@ class cfs_algn_clock_reset_during_apb_access extends cfs_algn_test_base;
     cfg_seq.start(env.virtual_sequencer);
 
     // Step 2: Launch APB sequence and trigger reset during it
-    
+
     fork
       begin : apb_txn
         apb_seq = cfs_apb_sequence_rw::type_id::create("apb_seq");
@@ -70,14 +72,15 @@ class cfs_algn_clock_reset_during_apb_access extends cfs_algn_test_base;
         `uvm_info("RESET_TEST", "Reset deasserted", UVM_MEDIUM)
       end
     join
-      env.model.reg_block.CTRL.write(status, 32'h00000004, UVM_FRONTDOOR);
+    env.model.reg_block.CTRL.write(status, 32'h00000004, UVM_FRONTDOOR);
 
     // Step 3: Wait for recovery and send legal RX traffic
     repeat (5) @(posedge algn_vif.clk);
     #(100ns);
 
     for (int i = 0; i < 4; i++) begin
-      rx_seq = cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_post_%0d", i));
+      rx_seq =
+          cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_post_%0d", i));
       rx_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_seq.randomize());
       rx_seq.start(env.virtual_sequencer);

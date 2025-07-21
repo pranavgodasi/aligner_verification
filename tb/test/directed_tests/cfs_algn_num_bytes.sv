@@ -11,7 +11,7 @@ class cfs_algn_num_bytes extends cfs_algn_test_base;
 
 
 
-virtual cfs_apb_if apb_vif;
+  virtual cfs_apb_if apb_vif;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
 
@@ -27,14 +27,14 @@ virtual cfs_apb_if apb_vif;
 
     cfs_algn_virtual_sequence_reg_config cfg_seq;
 
-   cfs_algn_virtual_sequence_rx_size1_offset0 rx_non_err_seq;
+    cfs_algn_virtual_sequence_rx_size1_offset0 rx_non_err_seq;
 
     cfs_algn_virtual_sequence_rx_crt rx_non_err_seq1;
 
     // cfs_md_sequence_tx_ready_block tx_block_seq;
 
     cfs_algn_vif vif;
- //   virtual cfs_apb_if apb_vif;
+    //   virtual cfs_apb_if apb_vif;
 
     uvm_reg_data_t control_val;
     uvm_reg_data_t status_val;
@@ -80,7 +80,7 @@ virtual cfs_apb_if apb_vif;
     env.model.reg_block.CTRL.write(status, 32'h00000002, UVM_FRONTDOOR);
     env.model.reg_block.CTRL.read(status, control_val, UVM_FRONTDOOR);
 
-  //  `uvm_info("3_2_4", $sformatf("CTRL register value: 0x%0h", control_val), UVM_MEDIUM)
+    //  `uvm_info("3_2_4", $sformatf("CTRL register value: 0x%0h", control_val), UVM_MEDIUM)
 
     // Step 3: Wait post reset
     vif = env.env_config.get_vif();
@@ -89,32 +89,35 @@ virtual cfs_apb_if apb_vif;
 
     // Step 4: Send 8 legal RX packets with SIZE=1 and OFFSET=0, delay 5 clks, read STATUS at each negedge
 
-    for (int i = 0; i < 1 ; i++) begin
-      rx_non_err_seq = cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_size1_%0d", i));
+    for (int i = 0; i < 1; i++) begin
+      rx_non_err_seq =
+          cfs_algn_virtual_sequence_rx_size1_offset0::type_id::create($sformatf("rx_size1_%0d", i));
       rx_non_err_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_non_err_seq.randomize());
       rx_non_err_seq.start(env.virtual_sequencer);
     end
-    
+
     #(100ns);
-    for (int i = 0; i < 1 ; i++) begin
-      rx_non_err_seq1 = cfs_algn_virtual_sequence_rx_crt::type_id::create($sformatf("rx_size1_%0d", i));
+    for (int i = 0; i < 1; i++) begin
+      rx_non_err_seq1 =
+          cfs_algn_virtual_sequence_rx_crt::type_id::create($sformatf("rx_size1_%0d", i));
       rx_non_err_seq1.set_sequencer(env.virtual_sequencer);
       void'(rx_non_err_seq1.randomize());
       rx_non_err_seq1.start(env.virtual_sequencer);
     end
-     #(100ns);
-        env.model.reg_block.CTRL.write(status, 32'h00000004, UVM_FRONTDOOR);
-        
-     for (int i = 0; i < 1 ; i++) begin
-      rx_non_err_seq1 = cfs_algn_virtual_sequence_rx_crt::type_id::create($sformatf("rx_size1_%0d", i));
+    #(100ns);
+    env.model.reg_block.CTRL.write(status, 32'h00000004, UVM_FRONTDOOR);
+
+    for (int i = 0; i < 1; i++) begin
+      rx_non_err_seq1 =
+          cfs_algn_virtual_sequence_rx_crt::type_id::create($sformatf("rx_size1_%0d", i));
       rx_non_err_seq1.set_sequencer(env.virtual_sequencer);
       void'(rx_non_err_seq1.randomize());
       rx_non_err_seq1.start(env.virtual_sequencer);
     end
-  
-   
-        
+
+
+
 
 
     #(500ns);

@@ -10,7 +10,7 @@ class cfs_md_sequence_simple_master extends cfs_md_sequence_base_master;
   local int unsigned data_width;
 
   constraint item_hard {
-    item.data.size() > 0;
+    item.data.size() >= 0;
     item.data.size() <= data_width / 8;
 
     item.offset < data_width / 8;

@@ -7,7 +7,7 @@
 //              TX FIFO.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_CTRL_V
-`define CFS_CTRL_V 
+`define CFS_CTRL_V
 
 module cfs_ctrl #(
     parameter ALGN_DATA_WIDTH = 32,

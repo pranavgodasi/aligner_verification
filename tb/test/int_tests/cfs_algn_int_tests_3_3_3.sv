@@ -66,7 +66,8 @@ class cfs_algn_int_tests_3_3_3 extends cfs_algn_test_base;
     #(200ns);
 
     env.model.reg_block.STATUS.read(status, rx_lvl, UVM_FRONTDOOR);
-
+    env.model.reg_block.IRQ.write(status, 32'h00000001,
+                                  UVM_FRONTDOOR);//Added to hit pwdata[0]=1 in expression coverage(irq_rx_fifo_empty & ~pwdata[0]) 
 
 
     //`uvm_info("3_3_3", $sformatf("RX_LVL = %0b", rx_lvl), UVM_MEDIUM)

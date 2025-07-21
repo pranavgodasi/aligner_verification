@@ -32,6 +32,7 @@ TESTNAME ?= $(DEFAULT_TEST)
 
 # UVM options with dynamic test name and random seed
 UVM_ARGS = +UVM_TESTNAME=$(TESTNAME) +UVM_MAX_QUIT_COUNT=1 +access +rw -f messages.f -sv_seed random 
+TOGGLE_DO=../../tb/sim/toggle_exclude.do
 
 # Simulation libraries
 WORKLIB = work
@@ -60,7 +61,7 @@ run:
 	@mkdir -p $(UCDB_DIR)
 	@echo "[Running Simulation with TESTNAME=$(TESTNAME)...]" | tee $(SIM_LOG)
 	@vsim -coverage -c work.testbench $(UVM_ARGS) \
-	 -do "coverage save -onexit $(UCDB_FILE); run -all; quit" \
+	 -do "do $(TOGGLE_DO); coverage save -onexit $(UCDB_FILE); run -all; quit;" \
 	 | tee -a $(SIM_LOG) | tee -a $(TRANSCRIPT)
 
 grun:

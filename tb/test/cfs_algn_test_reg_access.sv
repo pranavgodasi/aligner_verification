@@ -6,7 +6,7 @@
 //              of the Aligner module.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_ALGN_TEST_REG_ACCESS_SV
-`define CFS_ALGN_TEST_REG_ACCESS_SV 
+`define CFS_ALGN_TEST_REG_ACCESS_SV
 
 class cfs_algn_test_reg_access extends cfs_algn_test_base;
 

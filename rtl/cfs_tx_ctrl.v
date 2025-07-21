@@ -8,7 +8,7 @@
 //              by deasserting the md_tx_valid signal.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_TX_CTRL_V
-`define CFS_TX_CTRL_V 
+`define CFS_TX_CTRL_V
 
 module cfs_tx_ctrl #(
     parameter ALGN_DATA_WIDTH = 32,

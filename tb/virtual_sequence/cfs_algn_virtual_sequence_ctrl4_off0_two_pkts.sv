@@ -1,6 +1,5 @@
 
-class cfs_algn_virtual_sequence_ctrl4_off0_two_pkts
-  extends cfs_algn_virtual_sequence_base;
+class cfs_algn_virtual_sequence_ctrl4_off0_two_pkts extends cfs_algn_virtual_sequence_base;
 
   `uvm_object_utils(cfs_algn_virtual_sequence_ctrl4_off0_two_pkts)
 
@@ -51,7 +50,7 @@ class cfs_algn_virtual_sequence_ctrl4_off0_two_pkts
     rx_seq2.start(p_sequencer);
     `uvm_info(get_type_name(), "Sent RX Packet 2 (size=4, offset=0)", UVM_LOW)
 
-    #100ns; // spacing
+    #100ns;  // spacing
 
   endtask
 

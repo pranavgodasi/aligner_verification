@@ -65,7 +65,11 @@ class cfs_algn_int_tests_3_3_5 extends cfs_algn_test_base;
     // Step 4: Wait and read FIFO level from STATUS
     #(200ns);
     env.model.reg_block.STATUS.read(status, status_reg, UVM_FRONTDOOR);
+    env.model.reg_block.IRQ.write(status, 32'h00000004,
+                                  UVM_FRONTDOOR);//Added to hit pwdata[2]=1 in expression coverage(irq_tx_fifo_empty & ~pwdata[2]) 
     // rx_lvl_int = int'((status_reg >> 8) & 4'hF);  // Extract RX_LVL from bits [11:8]
+
+
 
     //`uvm_info("3_3_5", $sformatf("RX_LVL = %0d (from STATUS: 0x%0h)", rx_lvl_int, status_reg), UVM_MEDIUM)
 

@@ -5,7 +5,7 @@ class cfs_algn_md_tests_target_length extends cfs_algn_test_base;
 
   `uvm_component_utils(cfs_algn_md_tests_target_length)
 
-   function new(string name = "", uvm_component parent);
+  function new(string name = "", uvm_component parent);
     super.new(name, parent);
   endfunction
 
@@ -16,7 +16,8 @@ class cfs_algn_md_tests_target_length extends cfs_algn_test_base;
     cfs_md_sequence_slave_response_forever tx_unblock_seq;
     cfs_md_sequence_fixed_delay            rx_delay_seq;
     cfs_md_sequence_length_directed_9      tx_block_seq1;
-    cfs_md_sequence_length_directed_10      tx_block_seq2;
+    cfs_md_sequence_length_directed_10     tx_block_seq2;
+    cfs_md_sequence_length_directed_8      tx_block_seq3;
 
     virtual cfs_algn_if                    vif;
     uvm_status_e                           status;
@@ -57,17 +58,17 @@ class cfs_algn_md_tests_target_length extends cfs_algn_test_base;
         tx_block_seq1.start(env.md_tx_agent.sequencer);
       end
     join_none
-   
-   #(100ns);
-   
-     fork
+
+    #(100ns);
+
+    fork
       begin
         tx_block_seq2 = cfs_md_sequence_length_directed_10::type_id::create("tx_block_seq2");
         tx_block_seq2.start(env.md_tx_agent.sequencer);
       end
     join_none
-   
-   
+
+
     /*fork
       begin
         tx_unblock_seq = cfs_md_sequence_slave_response_forever::type_id::create("tx_unblock_seq");
@@ -75,11 +76,23 @@ class cfs_algn_md_tests_target_length extends cfs_algn_test_base;
       end
     join_none
     #(300ns);*/
-      for (int i = 0; i < 4; i++) begin
+    for (int i = 0; i < 4; i++) begin
       rx_delay_seq = cfs_md_sequence_fixed_delay::type_id::create($sformatf("rx_delay_seq_%0d", i));
       rx_delay_seq.start(env.md_rx_agent.sequencer);
     end
-    
+
+    fork
+      begin
+        tx_block_seq3 = cfs_md_sequence_length_directed_8::type_id::create("tx_block_seq3");
+        tx_block_seq3.start(env.md_tx_agent.sequencer);
+      end
+    join_none
+
+    for (int i = 0; i < 4; i++) begin
+      rx_delay_seq = cfs_md_sequence_fixed_delay::type_id::create($sformatf("rx_delay_seq_%0d", i));
+      rx_delay_seq.start(env.md_rx_agent.sequencer);
+    end
+
 
     `uvm_info("3_3_9", "TX unblocked, ready to consume data", UVM_MEDIUM)
 

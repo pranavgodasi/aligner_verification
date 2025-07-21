@@ -16,7 +16,7 @@
 //                    request from the Registers module.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_RX_CTRL_V
-`define CFS_RX_CTRL_V 
+`define CFS_RX_CTRL_V
 
 module cfs_rx_ctrl #(
     parameter ALGN_DATA_WIDTH       = 32,

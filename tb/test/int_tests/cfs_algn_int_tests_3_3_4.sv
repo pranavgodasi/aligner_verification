@@ -25,6 +25,7 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
 
     uvm_status_e status;
     uvm_reg_data_t irqen_val;
+    uvm_reg_data_t status_val;
 
     phase.raise_objection(this, "TEST_START");
 
@@ -51,8 +52,11 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
     env.model.reg_block.IRQEN.read(status, irqen_val, UVM_FRONTDOOR);
 
     irqen_val[3] = 1'b1;  // TX_FIFO_FULL
+
     env.model.reg_block.IRQEN.write(status, irqen_val, UVM_FRONTDOOR);
     `uvm_info("3_3_2", $sformatf("IRQEN configured: 0x%0h", irqen_val), UVM_MEDIUM)
+
+
 
     // Step 4: Send 19 RX packets (SIZE=1, OFFSET=0)
     for (int i = 0; i < 9; i++) begin
@@ -61,9 +65,21 @@ class cfs_algn_int_tests_3_3_4 extends cfs_algn_test_base;
       rx_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_seq.randomize());
       rx_seq.start(env.virtual_sequencer);
+      if (i == 7) begin
+        #(10ns);
+        env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
+      end
     end
 
+
     `uvm_info("3_3_2", "Completed sending RX traffic under TX backpressure.", UVM_MEDIUM)
+
+
+    env.model.reg_block.IRQEN.write(
+        status, 32'h00000000,
+        UVM_FRONTDOOR);  //Added to hit irqen_tx_fifo_full signal=0 in toggle coverage
+
+
 
     #(500ns);  // Let DUT settle
     phase.drop_objection(this, "TEST_DONE");

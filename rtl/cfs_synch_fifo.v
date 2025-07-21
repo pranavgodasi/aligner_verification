@@ -9,7 +9,7 @@
 //              delay cycles are to be expected.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_SYNCH_FIFO_V
-`define CFS_SYNCH_FIFO_V 
+`define CFS_SYNCH_FIFO_V
 
 module cfs_synch_fifo #(
     parameter DATA_WIDTH = 32,

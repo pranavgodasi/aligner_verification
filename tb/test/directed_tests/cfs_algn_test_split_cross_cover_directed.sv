@@ -8,17 +8,14 @@ class cfs_algn_test_split_cross_cover_directed extends cfs_algn_test_base;
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-        cfs_md_sequence_slave_response_forever slave_seq; 
+    cfs_md_sequence_slave_response_forever slave_seq;
     cfs_algn_virtual_sequence_split_cross_cover_directed seq;
     phase.raise_objection(this);
     #(100ns);
 
     fork
       begin
-        slave_seq = 
-            cfs_md_sequence_slave_response_forever::type_id::create(
-            "slave_seq"
-        );
+        slave_seq = cfs_md_sequence_slave_response_forever::type_id::create("slave_seq");
         slave_seq.start(env.md_tx_agent.sequencer);
       end
     join_none

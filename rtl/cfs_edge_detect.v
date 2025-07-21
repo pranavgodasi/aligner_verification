@@ -6,7 +6,7 @@
 //              signal.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_EDGE_DETECT_V
-`define CFS_EDGE_DETECT_V 
+`define CFS_EDGE_DETECT_V
 
 module cfs_edge_detect #(
     parameter bit EDGE = 1,

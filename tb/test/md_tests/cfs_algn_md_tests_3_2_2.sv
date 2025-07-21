@@ -18,19 +18,19 @@ class cfs_algn_md_tests_3_2_2 extends cfs_algn_test_base;
   virtual task run_phase(uvm_phase phase);
 
     cfs_md_sequence_slave_response_forever resp_seq;
-    cfs_algn_virtual_sequence_reg_config cfg_seq;
-    cfs_algn_virtual_sequence_rx_crt legal_seq;
-    cfs_algn_virtual_sequence_rx_err illegal_seq;
+    cfs_algn_virtual_sequence_reg_config   cfg_seq;
+    cfs_algn_virtual_sequence_rx_crt       legal_seq;
+    cfs_algn_virtual_sequence_rx_err       illegal_seq;
 
-    cfs_algn_vif vif;
-    uvm_status_e       status;
-    uvm_reg_data_t     ctrl_val;
-    uvm_reg_data_t     reg_val;
-    uvm_reg_field      cnt_drop_field;
-    uvm_reg_data_t     cnt_drop_val;
+    cfs_algn_vif                           vif;
+    uvm_status_e                           status;
+    uvm_reg_data_t                         ctrl_val;
+    uvm_reg_data_t                         reg_val;
+    uvm_reg_field                          cnt_drop_field;
+    uvm_reg_data_t                         cnt_drop_val;
 
-    int legal_count   = 0;
-    int illegal_count = 0;
+    int                                    legal_count = 0;
+    int                                    illegal_count = 0;
 
     phase.raise_objection(this, "TEST_START");
 
@@ -85,7 +85,7 @@ class cfs_algn_md_tests_3_2_2 extends cfs_algn_test_base;
       legal_count++;
     end
 
-    #(500ns); // Let DUT process transactions
+    #(500ns);  // Let DUT process transactions
 
     // Step 4: Read and report CNT_DROP field from STATUS register
     env.model.reg_block.STATUS.read(status, reg_val, UVM_FRONTDOOR);
@@ -97,8 +97,8 @@ class cfs_algn_md_tests_3_2_2 extends cfs_algn_test_base;
     `uvm_info("3_2_2", $sformatf("CNT_DROP field value:       %0d", cnt_drop_val), UVM_MEDIUM)
 
     if (cnt_drop_val != illegal_count)
-      `uvm_error("3_2_2", $sformatf("CNT_DROP mismatch! Expected %0d, got %0d",
-                                     illegal_count, cnt_drop_val))
+      `uvm_error("3_2_2", $sformatf(
+                 "CNT_DROP mismatch! Expected %0d, got %0d", illegal_count, cnt_drop_val))
 
     #(200ns);
 

@@ -12,7 +12,7 @@
 //                    for CTRL.SIZE and CTRL.OFFSET are illegal.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_REGS_V
-`define CFS_REGS_V 
+`define CFS_REGS_V
 
 module cfs_regs #(
     parameter APB_ADDR_WIDTH  = 16,

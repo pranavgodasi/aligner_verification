@@ -54,6 +54,7 @@ package cfs_md_pkg;
   `include "../sequence/cfs_md_sequence_fixed_delay.sv"
   `include "../sequence/cfs_md_sequence_tx_ready_block.sv"
   `include "../sequence/cfs_md_sequence_length_directed_7.sv"
+  `include "../sequence/cfs_md_sequence_length_directed_8.sv"
   `include "../sequence/cfs_md_sequence_length_directed_9.sv"
   `include "../sequence/cfs_md_sequence_length_directed_10.sv"
 endpackage

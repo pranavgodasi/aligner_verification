@@ -7,7 +7,7 @@
 //              The output 'o' is a synchronous signal working on 'clk'.
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_SYNCH_V
-`define CFS_SYNCH_V 
+`define CFS_SYNCH_V
 
 module cfs_synch #(
     parameter DATA_WIDTH = 32

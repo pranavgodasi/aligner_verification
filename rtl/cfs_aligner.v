@@ -8,7 +8,7 @@
 //              domain).
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_ALIGNER_V
-`define CFS_ALIGNER_V 
+`define CFS_ALIGNER_V
 module cfs_aligner #(
     parameter ALGN_DATA_WIDTH = 32,
     parameter FIFO_DEPTH      = 8,

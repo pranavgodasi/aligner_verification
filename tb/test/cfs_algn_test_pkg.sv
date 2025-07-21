@@ -39,13 +39,13 @@ package cfs_algn_test_pkg;
   //manual interrupt tests tests included below
   `include "../test/int_tests/cfs_algn_int_tests_3_3_1.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_2.sv"
+  `include "../test/int_tests/cfs_algn_int_tests_3_3_2_1.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_3.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_4.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_5.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_8.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_6.sv"
   `include "../test/int_tests/cfs_algn_int_tests_3_3_7.sv"
-
   //manual error tests included below
   `include "../test/err_tests/cfs_algn_err_tests_3_4_1.sv"
   `include "../test/err_tests/cfs_algn_err_tests_3_4_2.sv"
@@ -61,10 +61,11 @@ package cfs_algn_test_pkg;
   `include "../test/directed_tests/cfs_algn_directed_test_md_size1_offset3.sv"
   `include "../test/directed_tests/cfs_algn_test_split_cover_directed.sv"
   `include "../test/directed_tests/cfs_algn_test_ctrl4_off0_two_pkts.sv"
-   `include "../test/directed_tests/cfs_algn_test_split_cross_cover_directed.sv"
-   `include "../test/directed_tests/cfs_algn_test_split_legal_combinations.sv"
-
-
+  `include "../test/directed_tests/cfs_algn_test_split_cross_cover_directed.sv"
+  `include "../test/directed_tests/cfs_algn_test_split_legal_combinations.sv"
+  `include "../test/directed_tests/cfs_algn_md_test_rx_size0.sv"
+  `include "../test/directed_tests/cfs_algn_md_test_ctrlsize1_rxsize2_offset0.sv"
+  `include "../test/directed_tests/cfs_algn_test_size_offset_cross_reset_rand.sv"
 
 endpackage
 

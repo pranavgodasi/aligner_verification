@@ -1,15 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
-// File:        cfs_algn_int_tests_3_3_2.sv
+// File:        cfs_algn_int_tests_3_3_2_1.sv
 // Author:      Pranav
 // Date:        2023-06-27
-// Description: Test to verify triggering of RX FIFO full interrupt
+// Description: Test to hit the expression (irq_rx_fifo_full & ~pwdata[1]) 
+//              in expression coverage of reg instance
 ///////////////////////////////////////////////////////////////////////////////
-`ifndef CFS_ALGN_INT_TESTS_3_3_2_SV
-`define CFS_ALGN_INT_TESTS_3_3_2_SV
+`ifndef CFS_ALGN_INT_TESTS_3_3_2_1_SV
+`define CFS_ALGN_INT_TESTS_3_3_2_1_SV
 
-class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
+class cfs_algn_int_tests_3_3_2_1 extends cfs_algn_test_base;
 
-  `uvm_component_utils(cfs_algn_int_tests_3_3_2)
+  `uvm_component_utils(cfs_algn_int_tests_3_3_2_1)
 
   function new(string name = "", uvm_component parent);
     super.new(name, parent);
@@ -51,10 +52,10 @@ class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
     // Step 3: Enable IRQEN for RX_FIFO_FULL and TX_FIFO_FULL
     env.model.reg_block.IRQEN.read(status, irqen_val, UVM_FRONTDOOR);
     //irqen_val[1] = 1'b1;  // RX_FIFO_FULL
-    // irqen_val[3] = 1'b1;  // TX_FIFO_FULL
-    env.model.reg_block.IRQEN.write(status, 32'h00000000, UVM_FRONTDOOR);
-    #(50ns);
-    // env.model.reg_block.IRQEN.write(status, 32'h00000002, UVM_FRONTDOOR);
+   // irqen_val[3] = 1'b1;  // TX_FIFO_FULL
+   env.model.reg_block.IRQEN.write(status, 32'h00000002, UVM_FRONTDOOR);
+    #(50ns); 
+   // env.model.reg_block.IRQEN.write(status, 32'h00000002, UVM_FRONTDOOR);
     `uvm_info("3_3_2", $sformatf("IRQEN configured: 0x%0h", irqen_val), UVM_MEDIUM)
 
     // Step 4: Send 19 RX packets (SIZE=1, OFFSET=0)
@@ -64,21 +65,25 @@ class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
       rx_seq.set_sequencer(env.virtual_sequencer);
       void'(rx_seq.randomize());
       rx_seq.start(env.virtual_sequencer);
-      if (i == 17) begin
-        #(10ns);
-        env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
-      end
+       if(i==17)
+      begin
+      #(10ns);
+       env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
+       end
     end
-
+    
     env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
+    
+     env.model.reg_block.IRQ.write(status, 32'h00000000, UVM_FRONTDOOR);
+     
+      env.model.reg_block.IRQ.write(status, 32'h00000002, UVM_FRONTDOOR);
+    
 
     `uvm_info("3_3_2", "Completed sending RX traffic under TX backpressure.", UVM_MEDIUM)
-
+    
     #(50ns);
-
-    env.model.reg_block.IRQ.write(
-        status, 32'h00000002,
-        UVM_FRONTDOOR);  //Added to hit irq_rx_fifo_full signal=0 in toggle coverage
+    
+    //env.model.reg_block.IRQ.write(status, 32'h00000002, UVM_FRONTDOOR);//Added to hit irq_rx_fifo_full signal=0 in toggle coverage
 
     #(500ns);  // Let DUT settle
     phase.drop_objection(this, "TEST_DONE");

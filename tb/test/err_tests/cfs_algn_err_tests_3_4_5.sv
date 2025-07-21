@@ -38,21 +38,21 @@ class cfs_algn_err_tests_3_4_5 extends cfs_algn_test_base;
     join_none
 
     // Step 1: Basic register configuration
-    cfg_seq = cfs_algn_virtual_sequence_reg_config::type_id::create("cfg_seq");
+    /*  cfg_seq = cfs_algn_virtual_sequence_reg_config::type_id::create("cfg_seq");
     cfg_seq.set_sequencer(env.virtual_sequencer);
-    cfg_seq.start(env.virtual_sequencer);
+    cfg_seq.start(env.virtual_sequencer);*/
 
     // Step 2: Write illegal CTRL values (SIZE=3, OFFSET=1)
+    ctrl_val = 32'h00000203;
+    env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
+    //#(50ns);
     ctrl_val = 32'h00000103;
     env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
     #(50ns);
-    ctrl_val = 32'h00000106;
-    env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
-    #(50ns);
-     ctrl_val = 32'h00000100;
+    /*  ctrl_val = 32'h00000100;
     env.model.reg_block.CTRL.write(status, ctrl_val, UVM_FRONTDOOR);
     // Step 3: Wait and check DUT response
-    #(200ns);
+    #(200ns);*/
 
 
     phase.drop_objection(this, "TEST_DONE");

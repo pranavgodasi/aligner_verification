@@ -5,7 +5,7 @@
 // Description: Random test
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_ALGN_TEST_RANDOM_SV
-`define CFS_ALGN_TEST_RANDOM_SV 
+`define CFS_ALGN_TEST_RANDOM_SV
 
 class cfs_algn_test_random extends cfs_algn_test_base;
 

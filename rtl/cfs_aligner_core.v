@@ -129,7 +129,7 @@
 //                IRQ[31:5]   = reserved
 ///////////////////////////////////////////////////////////////////////////////
 `ifndef CFS_ALIGNER_CORE_V
-`define CFS_ALIGNER_CORE_V 
+`define CFS_ALIGNER_CORE_V
 module cfs_aligner_core #(
     parameter APB_ADDR_WIDTH  = 16,
     parameter ALGN_DATA_WIDTH = 32,
