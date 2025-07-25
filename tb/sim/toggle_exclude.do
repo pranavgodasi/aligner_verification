@@ -24,94 +24,105 @@ coverage exclude -scope /testbench/dut/core/regs -togglenode {irqen_rd_val[20]} 
 coverage exclude -scope /testbench/dut/core/regs -togglenode {irqen_rd_val[10]} {irqen_rd_val[11]} {irqen_rd_val[12]} {irqen_rd_val[13]} {irqen_rd_val[14]} {irqen_rd_val[15]} {irqen_rd_val[16]} {irqen_rd_val[17]} {irqen_rd_val[18]} {irqen_rd_val[19]}
 coverage exclude -scope /testbench/dut/core/regs -togglenode {irqen_rd_val[8]} {irqen_rd_val[9]} {irqen_rd_val[5]} {irqen_rd_val[6]} {irqen_rd_val[7]}
 
-# Waive line 132 in tx_fifo
+# Waive row 1 at line 132 in tx_fifo
 coverage exclude \
-  -scope /testbench/dut/core/tx_fifo \
-  -srcfile "../../rtl/cfs_synch_fifo.v" \
-  -linerange 132 \
-  -code c \
-  -comment "Waiving uncovered condition at line 132 (tx_fifo)"
- 
-# Waive line 156 in tx_fifo
-coverage exclude \
-  -scope /testbench/dut/core/tx_fifo \
-  -srcfile "../../rtl/cfs_synch_fifo.v" \
-  -linerange 156 \
-  -code c \
-  -comment "Waiving uncovered condition at line 156 (tx_fifo)"
- 
-# Waive line 132 in rx_fifo
-coverage exclude \
-  -scope /testbench/dut/core/rx_fifo \
-  -srcfile "../../rtl/cfs_synch_fifo.v" \
-  -linerange 132 \
-  -code c \
-  -comment "Waiving uncovered condition at line 132 (rx_fifo)"
- 
-# Waive line 76 in rx_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/rx_ctrl \
-  -srcfile "../../rtl/cfs_rx_ctrl.v" \
-  -linerange 76 \
-  -code c \
-  -comment "Waiving uncovered condition at line 76 (rx_ctrl)"
-  
-# Waive line 81 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 81 \
-  -code c \
-  -comment "Waiving uncovered condition at line 81 (cfs_ctrl)"
-  
-# Waive line 91 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 91 \
-  -code c \
-  -comment "Waiving uncovered condition at line 91 (cfs_ctrl)"
-  
-# Waive line 106 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 106 \
-  -code c \
-  -comment "Waiving uncovered condition at line 106 (cfs_ctrl)"
-  
-# Waive line 112 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 112 \
-  -code c \
-  -comment "Waiving uncovered condition at line 112 (cfs_ctrl)"
-  
-# Waive line 143 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 143 \
-  -code c \
-  -comment "Waiving uncovered condition at line 143 (cfs_ctrl)"
+  -src ../../rtl/cfs_synch_fifo.v \
+  -scope merged:/testbench/dut/core/tx_fifo \
+  -feccondrow 132 1 \
+  -comment "Excluding unreachable condition (row 1) at line 132 in tx_fifo"
 
-# Waive line 194 in cfs_ctrl
+# Waive row 1 at line 156 in tx_fifo
 coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 194 \
-  -code c \
-  -comment "Waiving uncovered condition at line 194 (cfs_ctrl)" 
+  -src ../../rtl/cfs_synch_fifo.v \
+  -scope merged:/testbench/dut/core/tx_fifo \
+  -feccondrow 156 1 \
+  -comment "Excluding unreachable condition (row 1) at line 156 in tx_fifo"
 
-# Waive line 229 in cfs_ctrl
+# Waive row 1 at line 132 in rx_fifo
 coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 229 \
-  -code c \
-  -comment "Waiving uncovered condition at line 229 (cfs_ctrl)"
+  -src ../../rtl/cfs_synch_fifo.v \
+  -scope merged:/testbench/dut/core/rx_fifo \
+  -feccondrow 132 1 \
+  -comment "Excluding unreachable condition (row 1) at line 132 in rx_fifo"
+
   
+# Waive row 1,3 at line 76 in rx_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_rx_ctrl.v \
+  -scope merged:/testbench/dut/core/rx_ctrl \
+  -feccondrow 76 1 3\
+  -comment "Excluding unreachable condition (row 1,3) at line 76 in rx_ctrl"
+
+# Waive row 3 at line 81 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 81 3 \
+  -comment "Excluding unreachable condition (row 3) at line 81 in cfs_ctrl"
+
+# Waive row 2,3,4 at line 91 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 91 2 3 4 \
+  -comment "Excluding unreachable condition (row 2,3,4) at line 91 in cfs_ctrl"
+
+# Waive row 1,3 at line 106 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 106 1 3 \
+  -comment "Excluding unreachable condition (row 1,3) at line 106 in cfs_ctrl"
+
+# Waive row 3 at line 112 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 112 3 \
+  -comment "Excluding unreachable condition (row 3) at line 112 in cfs_ctrl"
+
+# Waive row 2,3,4 at line 143 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 143 2 3 4 \
+  -comment "Excluding unreachable condition (row 2,3,4) at line 143 in cfs_ctrl"
+
+# Waive row 3 at line 194 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 194 3 \
+  -comment "Excluding unreachable condition (row 3) at line 194 in cfs_ctrl"
+
+# Waive row 2,3,4 at line 229 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 229 2 3 4 \
+  -comment "Excluding unreachable condition (row 2,3,4) at line 229 in cfs_ctrl"
+  
+# Waive row 1 at line 191 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 191 1 \
+  -comment "Excluding unreachable condition (row 1) at line 194 in cfs_ctrl"
+  
+# Waive row 1,2 at line 239 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 239 1 2 \
+  -comment "Excluding unreachable condition (row 1,2) at line 239 in cfs_ctrl"
+  
+# Waive row 1,2 at line 249 in cfs_ctrl
+coverage exclude \
+  -src ../../rtl/cfs_ctrl.v \
+  -scope merged:/testbench/dut/core/ctrl \
+  -feccondrow 249 1 2 \
+  -comment "Excluding unreachable condition (row 1,2) at line 249 in cfs_ctrl"
+
 # Waive line 91 in cfs_ctrl
 coverage exclude \
   -scope /testbench/dut/core/ctrl \
@@ -135,7 +146,7 @@ coverage exclude \
   -linerange 229 \
   -code b \
   -comment "Waiving uncovered branch at line 229 (cfs_ctrl)"
-  
+
 # Waive line 94 in cfs_ctrl
 coverage exclude \
   -scope /testbench/dut/core/ctrl \
@@ -215,30 +226,6 @@ coverage exclude \
   -linerange 265 \
   -code s \
   -comment "Waiving uncovered statement at line 265 (cfs_ctrl)"
-  
-# Waive line 191 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 191 \
-  -code c \
-  -comment "Waiving uncovered condition at line 191 (cfs_ctrl)"
-  
-# Waive line 128 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 239 \
-  -code c \
-  -comment "Waiving uncovered condition at line 239 (cfs_ctrl)"
-  
-# Waive line 249 in cfs_ctrl
-coverage exclude \
-  -scope /testbench/dut/core/ctrl \
-  -srcfile "../../rtl/cfs_ctrl.v" \
-  -linerange 249 \
-  -code c \
-  -comment "Waiving uncovered condition at line 249 (cfs_ctrl)"
   
 # Waive line 128 in cfs_ctrl
 coverage exclude \

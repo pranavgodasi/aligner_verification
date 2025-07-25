@@ -25,6 +25,7 @@ class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
 
     uvm_status_e status;
     uvm_reg_data_t irqen_val;
+      uvm_reg_data_t irq_val;
     uvm_reg_data_t status_val;
 
     phase.raise_objection(this, "TEST_START");
@@ -69,6 +70,8 @@ class cfs_algn_int_tests_3_3_2 extends cfs_algn_test_base;
         env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
       end
     end
+    
+       env.model.reg_block.IRQ.read(status, irq_val, UVM_FRONTDOOR);
 
     env.model.reg_block.STATUS.RX_LVL.read(status, status_val, UVM_FRONTDOOR);
 
