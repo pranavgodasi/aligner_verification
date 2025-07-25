@@ -1,6 +1,9 @@
 # -------------------------
 # Simulation output files
 # -------------------------
+# Explicitly allow important text and shell files
+!tb/sim/regressions/regress_list.txt
+!tb/sim/regressions/run_regression.sh
 *.log
 *.vstf
 *.wlf
