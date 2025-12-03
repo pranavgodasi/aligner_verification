@@ -1,3 +1,3 @@
 # aligner_repo
-UVM based testbench for the design of the aligner
+Complete UVM based testbench(along with coverage) for the design of Aligner
 updated till extension packages
